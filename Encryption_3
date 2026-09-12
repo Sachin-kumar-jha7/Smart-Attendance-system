@@ -1,0 +1,26 @@
+function y = embed_watermark(x)
+
+persistent key amp Fs
+if isempty(key)
+    key = 12345;
+    amp = 0.05;
+    Fs = 44100;
+end
+
+% --- Watermark Parameters for Audibility ---
+watermark_freq = 100;  % Low-frequency tone (easy to hear)
+watermark_phase = 2*pi * (key / 100000);
+
+[N, C] = size(x);
+y = zeros(N, C);
+t = (0:N-1)' / Fs;
+
+% --- Generate the Audible Sinusoidal Watermark ---
+w = amp * sin(2*pi * watermark_freq * t + watermark_phase);
+
+% --- Embed the Watermark ---
+for c = 1:C
+    y(:,c) = x(:,c) + w;
+    y(:,c) = max(-1, min(1, y(:,c)));
+end
+end
