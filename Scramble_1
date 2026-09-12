@@ -1,0 +1,20 @@
+function y = scramble_stereo_fft(u, k)
+    left_channel_fft = u(:, 1);
+    right_channel_fft = u(:, 2);
+
+    scrambled_left = scramble_channel(left_channel_fft, k);
+    scrambled_right = scramble_channel(right_channel_fft, k);
+    
+    y = [scrambled_left, scrambled_right];
+end
+
+function scrambled_ch = scramble_channel(ch, k)
+    N = length(ch);
+    scrambled_ch = complex(zeros(N, 1));
+    shift_amount = k*13; 
+    
+    for i = 1:N
+        new_i = mod(i - 1 + shift_amount, N) + 1;
+        scrambled_ch(new_i) = ch(i);
+    end
+end
